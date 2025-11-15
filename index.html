@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم تيك توك - إدارة الحسابات والتعليقات</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- الشاشة الرئيسية -->
+    <div class="main-screen" id="mainScreen">
+        <header class="header">
+            <div class="container">
+                <h1 class="logo">🎵 لوحة تحكم تيك توك</h1>
+                <button class="btn btn-primary" id="startWorkflowBtn">بدء سير العمل</button>
+            </div>
+        </header>
+
+        <main class="container">
+            <!-- قسم إدارة الحسابات -->
+            <section class="section accounts-section">
+                <div class="section-header">
+                    <h2>🎯 إدارة الحسابات</h2>
+                    <button class="btn btn-secondary" id="addAccountBtn">إضافة حساب جديد</button>
+                </div>
+                <div class="accounts-grid" id="accountsGrid">
+                    <!-- الحسابات ستُضاف ديناميكياً -->
+                </div>
+            </section>
+
+            <!-- قسم إدارة الروابط -->
+            <section class="section links-section">
+                <div class="section-header">
+                    <h2>🔗 إدارة الروابط</h2>
+                    <button class="btn btn-secondary" id="addLinkBtn">إضافة رابط جديد</button>
+                </div>
+                <div class="links-list" id="linksList">
+                    <!-- الروابط ستُضاف ديناميكياً -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- نافذة إضافة/تعديل حساب -->
+    <div class="modal" id="accountModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="accountModalTitle">إضافة حساب جديد</h2>
+                <button class="close-btn" id="closeAccountModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="accountForm">
+                    <div class="form-group">
+                        <label for="accountUsername">اسم المستخدم</label>
+                        <input type="text" id="accountUsername" required placeholder="مثال: @username">
+                    </div>
+                    <div class="form-group">
+                        <label for="accountDisplayName">الاسم المعروض</label>
+                        <input type="text" id="accountDisplayName" required placeholder="مثال: اسم الحساب">
+                    </div>
+                    <div class="form-group">
+                        <label for="accountPassword">كلمة المرور</label>
+                        <input type="password" id="accountPassword" required placeholder="••••••••">
+                    </div>
+                    <input type="hidden" id="accountId">
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-cancel" id="cancelAccountBtn">إلغاء</button>
+                        <button type="submit" class="btn btn-primary">حفظ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة إضافة/تعديل رابط -->
+    <div class="modal" id="linkModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="linkModalTitle">إضافة رابط جديد</h2>
+                <button class="close-btn" id="closeLinkModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="linkForm">
+                    <div class="form-group">
+                        <label for="linkTitle">العنوان</label>
+                        <input type="text" id="linkTitle" required placeholder="مثال: رابط المنتج">
+                    </div>
+                    <div class="form-group">
+                        <label for="linkUrl">الرابط</label>
+                        <input type="url" id="linkUrl" required placeholder="https://example.com">
+                    </div>
+                    <input type="hidden" id="linkId">
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-cancel" id="cancelLinkBtn">إلغاء</button>
+                        <button type="submit" class="btn btn-primary">حفظ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- شاشة سير العمل -->
+    <div class="workflow-screen" id="workflowScreen">
+        <div class="workflow-container">
+            <!-- شريط التقدم -->
+            <div class="progress-bar">
+                <div class="progress-steps">
+                    <div class="step active" data-step="1">
+                        <div class="step-circle">1</div>
+                        <div class="step-label">اختيار الحساب</div>
+                    </div>
+                    <div class="step" data-step="2">
+                        <div class="step-circle">2</div>
+                        <div class="step-label">تسجيل الدخول</div>
+                    </div>
+                    <div class="step" data-step="3">
+                        <div class="step-circle">3</div>
+                        <div class="step-label">كتابة التعليق</div>
+                    </div>
+                    <div class="step" data-step="4">
+                        <div class="step-circle">4</div>
+                        <div class="step-label">مراجعة ونشر</div>
+                    </div>
+                    <div class="step" data-step="5">
+                        <div class="step-circle">5</div>
+                        <div class="step-label">تأكيد النجاح</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- الخطوة 1: اختيار الحساب -->
+            <div class="workflow-step active" id="step1">
+                <h2>اختيار الحساب</h2>
+                <p>اختر الحساب الذي تريد النشر عليه</p>
+                <div class="accounts-select" id="workflowAccountsSelect">
+                    <!-- الحسابات ستُضاف ديناميكياً -->
+                </div>
+                <button class="btn btn-primary" id="nextToStep2" disabled>التالي</button>
+            </div>
+
+            <!-- الخطوة 2: تسجيل الدخول -->
+            <div class="workflow-step" id="step2">
+                <h2>تسجيل الدخول إلى تيك توك</h2>
+                <div class="login-info" id="loginInfo">
+                    <p>الحساب المحدد: <strong id="selectedAccountName"></strong></p>
+                    <p style="margin-top: 15px; color: var(--tiktok-light-gray); font-size: 14px;">
+                        يرجى تسجيل الدخول يدوياً في النافذة أدناه. بعد تسجيل الدخول بنجاح، سيتم استخراج cookies و tokens تلقائياً.
+                    </p>
+                    <p id="sessionStatus" style="margin-top: 10px; font-size: 12px; color: var(--warning);">
+                        ⏳ جاري الاستخراج التلقائي للجلسة...
+                    </p>
+                </div>
+                <div class="tiktok-login-container">
+                    <iframe id="tiktokLoginFrame" src="https://www.tiktok.com/login" frameborder="0" style="width: 100%; height: 600px; border-radius: 12px; border: 2px solid var(--tiktok-pink);"></iframe>
+                </div>
+                <div style="margin-top: 20px; text-align: center;">
+                    <button class="btn btn-primary" id="confirmLoginBtn">استخراج الجلسة وتأكيد</button>
+                    <button class="btn btn-secondary" id="extractSessionBtn">استخراج الجلسة تلقائياً</button>
+                    <button class="btn btn-secondary" id="nextToStep3" disabled style="margin-right: 10px;">التالي</button>
+                </div>
+            </div>
+
+            <!-- الخطوة 3: اختيار التعليقات -->
+            <div class="workflow-step" id="step3">
+                <h2>اختيار التعليقات</h2>
+                <div class="form-group">
+                    <label for="videoUrl">رابط الفيديو على تيك توك</label>
+                    <input type="url" id="videoUrl" required placeholder="https://www.tiktok.com/@username/video/1234567890" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(254, 44, 85, 0.3); background: rgba(0, 0, 0, 0.3); color: var(--white);">
+                </div>
+                <div class="form-group">
+                    <label>اختر التعليقات (يمكنك اختيار أكثر من تعليق)</label>
+                    <div class="comments-selection-container">
+                        <div class="comments-search">
+                            <input type="text" id="commentsSearch" placeholder="ابحث عن تعليق..." style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(254, 44, 85, 0.3); background: rgba(0, 0, 0, 0.3); color: var(--white); margin-bottom: 15px;">
+                        </div>
+                        <div class="comments-list" id="commentsList">
+                            <!-- التعليقات ستُضاف ديناميكياً -->
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="commentsQuantity">عدد التعليقات المراد نشرها</label>
+                    <input type="number" id="commentsQuantity" min="1" max="100" value="1" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(254, 44, 85, 0.3); background: rgba(0, 0, 0, 0.3); color: var(--white);">
+                    <p style="font-size: 12px; color: var(--tiktok-light-gray); margin-top: 5px;">المحدد: <span id="selectedCommentsCount">0</span> تعليق</p>
+                </div>
+                <button class="btn btn-primary" id="nextToStep4" disabled>التالي</button>
+            </div>
+
+            <!-- الخطوة 4: مراجعة ونشر -->
+            <div class="workflow-step" id="step4">
+                <h2>مراجعة ونشر</h2>
+                <div class="review-card">
+                    <div class="review-item">
+                        <strong>الحساب:</strong>
+                        <span id="reviewAccount"></span>
+                    </div>
+                    <div class="review-item">
+                        <strong>رابط الفيديو:</strong>
+                        <span id="reviewVideoUrl"></span>
+                    </div>
+                    <div class="review-item">
+                        <strong>عدد التعليقات المحددة:</strong>
+                        <span id="reviewCommentsCount"></span>
+                    </div>
+                    <div class="review-item">
+                        <strong>عدد التعليقات المراد نشرها:</strong>
+                        <span id="reviewQuantity"></span>
+                    </div>
+                    <div class="review-item">
+                        <strong>التعليقات المحددة:</strong>
+                        <div class="review-comments-list" id="reviewCommentsList"></div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-cancel" id="backToStep3">رجوع</button>
+                    <button class="btn btn-primary" id="publishBtn">بدء النشر</button>
+                </div>
+            </div>
+
+            <!-- الخطوة 5: تأكيد النجاح -->
+            <div class="workflow-step" id="step5">
+                <div class="publishing-progress" id="publishingProgress">
+                    <h2>جاري النشر...</h2>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" id="progressBarFill"></div>
+                    </div>
+                    <p id="publishingStatus">جاري نشر التعليقات...</p>
+                    <p id="publishedCount">تم النشر: <span id="publishedCountNumber">0</span> / <span id="totalCountNumber">0</span></p>
+                </div>
+                <div class="success-animation" id="successAnimation" style="display: none;">
+                    <div class="success-icon">✓</div>
+                    <h2>تم النشر بنجاح!</h2>
+                    <p id="successMessage">تم نشر جميع التعليقات بنجاح على تيك توك</p>
+                </div>
+                <button class="btn btn-primary" id="backToMainBtn" style="display: none;">العودة للشاشة الرئيسية</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- إشعارات -->
+    <div class="notification" id="notification"></div>
+
+    <script src="tiktok-publisher.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
+
